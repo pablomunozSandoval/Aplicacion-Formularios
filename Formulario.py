@@ -1,11 +1,11 @@
+from tkinter import *
+import ttkbootstrap as tb
 import re
 import tkinter as tk
-from tkinter import *
-from tkinter import ttk
+import datetime as dt
+
 from datetime import datetime
 from tkinter import messagebox
-from tkcalendar import DateEntry
-from rut_chile import rut_chile
 from email_validator import validate_email, EmailNotValidError
 
 
@@ -20,41 +20,45 @@ class FormularioApp:
         self.apellido_paterno_var = tk.StringVar()
         self.rut_var = tk.StringVar()
         self.direccion_var = tk.StringVar()
+        self.calendario_var = dt.datetime.now()
         self.correo_var = tk.StringVar()
         self.telefono_var = tk.StringVar()
         self.empresa_var = tk.StringVar()
         self.funciones_var = tk.StringVar()
         self.descripcion_textbox = tk.StringVar()
 
+        # TODO Creando el estilo visual del widgets con TTkBootstrap
         # Variable validar rut
         self.rut_validado = False
 
         # Crear el marco para el formulario de información personal
-        personal_frame = ttk.LabelFrame(root, text="Información Personal")
-        personal_frame.grid(row=0, column=0, padx=20, pady=5, sticky="w")
+        personal_frame = tb.LabelFrame(root, text="Información Personal")
+        personal_frame.grid(row=0, column=0, padx=20, pady=20, sticky="w")
 
         # Crear campos del formulario de información personal
-        ttk.Label(personal_frame, text="Nombre:").grid(
+        tb.Label(personal_frame, text="Nombre:").grid(
             row=0, column=0, sticky="w")
-        nombre_entry = ttk.Entry(personal_frame, textvariable=self.nombre_var)
-        nombre_entry.grid(row=0, column=1, sticky="w")
+        nombre_entry = tb.Entry(personal_frame, textvariable=self.nombre_var)
+        nombre_entry.grid(row=0, column=1, pady=5, padx=5, sticky="w")
 
-        ttk.Label(personal_frame, text="Apellido Paterno:").grid(
+        tb.Label(personal_frame, text="Apellido Paterno:").grid(
             row=1, column=0, sticky="w")
-        apellido_paterno_entry = ttk.Entry(
+        apellido_paterno_entry = tb.Entry(
             personal_frame, textvariable=self.apellido_paterno_var)
-        apellido_paterno_entry.grid(row=1, column=1, sticky="w")
+        apellido_paterno_entry.grid(
+            row=1, column=1, pady=5, padx=5, sticky="w")
 
-        ttk.Label(personal_frame, text="Apellido Materno:").grid(
+        tb.Label(personal_frame, text="Apellido Materno:").grid(
             row=2, column=0, sticky="w")
-        apellido_materno_entry = ttk.Entry(
+        apellido_materno_entry = tb.Entry(
             personal_frame, textvariable=self.apellido_materno_var)
-        apellido_materno_entry.grid(row=2, column=1, sticky="w")
+        apellido_materno_entry.grid(
+            row=2, column=1, pady=5, padx=5, sticky="w")
 
-        ttk.Label(personal_frame, text="Rut:").grid(
+        tb.Label(personal_frame, text="Rut:").grid(
             row=3, column=0, sticky="w")
-        rut_entry = ttk.Entry(personal_frame, textvariable=self.rut_var)
-        rut_entry.grid(row=3, column=1, sticky="w")
+        rut_entry = tb.Entry(personal_frame, textvariable=self.rut_var)
+        rut_entry.grid(row=3, column=1, pady=5, padx=5, sticky="w")
 
         # Dar formato Entry - RUT
         def formato_rut(*args):
@@ -81,28 +85,29 @@ class FormularioApp:
         # Vincular la función "formato_rut"al evento <FocusOut>
         rut_entry.bind("<FocusOut>", formato_rut)
 
-        ttk.Label(personal_frame, text="Fecha de Nacimiento").grid(
+        tb.Label(personal_frame, text="Fecha de Nacimiento").grid(
             row=4, column=0, sticky="w")
-        self.calendario_entry = DateEntry(personal_frame, width=12, day=1, month=1, year=2000,
-                                          date_pattern="dd-mm-yyyy", background='darkblue', foreground='white', borderwidth=2)
-        self.calendario_entry.grid(row=4, column=1, sticky="w")
 
-        ttk.Label(personal_frame, text="Dirección:").grid(
+        self.calendario_entry = tb.DateEntry(
+            personal_frame, bootstyle="danger", firstweekday=0, startdate=dt.datetime(1990, 12, 31))
+        self.calendario_entry.grid(row=4, column=1, pady=5, padx=5, sticky="w")
+
+        tb.Label(personal_frame, text="Dirección:").grid(
             row=5, column=0, sticky="w")
-        direccion_entry = ttk.Entry(
+        direccion_entry = tb.Entry(
             personal_frame, textvariable=self.direccion_var)
-        direccion_entry.grid(row=5, column=1, sticky="w")
+        direccion_entry.grid(row=5, column=1, pady=5, padx=5, sticky="w")
 
-        ttk.Label(personal_frame, text="Correo electrónico:").grid(
+        tb.Label(personal_frame, text="Correo electrónico:").grid(
             row=6, column=0, sticky="w")
-        correo_entry = ttk.Entry(personal_frame, textvariable=self.correo_var)
-        correo_entry.grid(row=6, column=1, sticky="w")
+        correo_entry = tb.Entry(personal_frame, textvariable=self.correo_var)
+        correo_entry.grid(row=6, column=1, pady=5, padx=5, sticky="w")
 
-        ttk.Label(personal_frame, text="Número de teléfono:").grid(
+        tb.Label(personal_frame, text="Número de teléfono:").grid(
             row=7, column=0, sticky="w")
-        telefono_entry = ttk.Entry(
+        telefono_entry = tb.Entry(
             personal_frame, textvariable=self.telefono_var)
-        telefono_entry.grid(row=7, column=1, sticky="w")
+        telefono_entry.grid(row=7, column=1, pady=5, padx=5, sticky="w")
 
         # Formatear telefono al salir del foc
         def formato_telefono(*args):
@@ -118,34 +123,36 @@ class FormularioApp:
         # Vincular la función  al evento <FocusOut>
         telefono_entry.bind("<FocusOut>", formato_telefono)
 
-        ttk.Label(personal_frame, text="Empresa:").grid(
+        tb.Label(personal_frame, text="Empresa:").grid(
             row=8, column=0, sticky="w")
-        empresa_entry = ttk.Entry(
+        empresa_entry = tb.Entry(
             personal_frame, textvariable=self.empresa_var)
-        empresa_entry.grid(row=8, column=1, sticky="w")
+        empresa_entry.grid(row=8, column=1, pady=5, padx=5, sticky="w")
 
-        ttk.Label(personal_frame, text="Cargo:").grid(
+        tb.Label(personal_frame, text="Cargo:").grid(
             row=9, column=0, sticky="w")
+
         opciones_cargo = ["Ejecutivo de Ventas", "Cajero", "Analista",
                           "Jefe de Área", "Jefe de Proyectos", "Gerente", "DBA"]
-        self.cargo_combobox = ttk.Combobox(
+        self.cargo_combobox = tb.Combobox(
             personal_frame, values=opciones_cargo)
-        self.cargo_combobox.grid(row=9, column=1, sticky="w")
+        self.cargo_combobox.grid(row=9, column=1, pady=5, padx=5, sticky="w")
 
-        ttk.Label(personal_frame, text="Descripción del Cargo:").grid(
+        tb.Label(personal_frame, text="Descripción del Cargo:").grid(
             row=10, column=0, sticky="w")
 
         # Crear un cuadro de texto (textbox) para la descripción
         self.descripcion_textbox = tk.Text(personal_frame, height=5, width=40)
-        self.descripcion_textbox.grid(row=10, column=1, sticky="w")
+        self.descripcion_textbox.grid(
+            row=10, column=1, pady=5, padx=5, sticky="w")
 
         # Crear e l botón para guardar el formulario
-        guardar_button = ttk.Button(
+        guardar_button = tb.Button(
             root, text="Guardar", command=self.guardar_formulario)
         guardar_button.grid(row=1, column=0, padx=20, sticky="w")
 
         # Crear la grilla para mostrar la información
-        self.tabla = ttk.Treeview(root, columns=(
+        self.tabla = tb.Treeview(root, columns=(
             "Nombre Completo", "Rut", "Edad", "Correo Electrónico", "Teléfono", "Empresa", "Cargo", "Acciones"))
         self.tabla.grid(row=2, column=0,  padx=10, pady=5, sticky="w")
         self.tabla.column("#0", width=10, stretch=False)
@@ -172,13 +179,13 @@ class FormularioApp:
         self.tabla.bind("<Button-1>", self.on_select)
 
         # Agregar scrollbar vertical de la grilla
-        scrollbar = ttk.Scrollbar(
+        scrollbar = tb.Scrollbar(
             root, orient="vertical", command=self.tabla.yview)
         self.tabla.configure(yscrollcommand=scrollbar.set)
         scrollbar.grid(row=2, column=1, sticky="ns")
 
         # Agregar scrollbar horizontal de la grilla
-        scrollbar_x = ttk.Scrollbar(
+        scrollbar_x = tb.Scrollbar(
             root, orient="horizontal", command=self.tabla.xview)
         self.tabla.configure(xscrollcommand=scrollbar_x.set)
         scrollbar_x.grid(row=3, column=0, sticky="ew")
@@ -211,7 +218,7 @@ class FormularioApp:
         nombre_completo = nombre.upper() + " " + apellido_paterno.upper() + \
             " " + apellido_materno.upper()
         rut = self.rut_var.get()
-        fecha_nacimiento = self.calendario_entry.get_date()
+        fecha_nacimiento = self.calendario_entry.entry.get()
         direccion = self.direccion_var.get()
         correo = self.correo_var.get()
         telefono = self.telefono_var.get()
@@ -260,7 +267,9 @@ class FormularioApp:
         # Calcular la edad  a partir de la fecha de nacimiento
         def calcular_edad(fecha_nacimiento):
             if fecha_nacimiento:
-
+                fecha_nacimiento = fecha_nacimiento.replace("-", "/")
+                formato = "%d/%m/%Y"
+                fecha_nacimiento = datetime.strptime(fecha_nacimiento, formato)
                 hoy = datetime.today()
                 edad = hoy.year - fecha_nacimiento.year - \
                     ((hoy.month, hoy.day) <
