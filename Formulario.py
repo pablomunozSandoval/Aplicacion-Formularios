@@ -1,9 +1,7 @@
-from tkinter import *
 import ttkbootstrap as tb
 import re
 import tkinter as tk
 import datetime as dt
-
 from datetime import datetime
 from tkinter import messagebox
 from email_validator import validate_email, EmailNotValidError
@@ -13,105 +11,82 @@ class FormularioApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Formulario de Información")
-
+        # Establecer el tema  del formulario a "Flatly"
         # Variables para almacenar los datos del formulario
         self.nombre_var = tk.StringVar()
         self.apellido_materno_var = tk.StringVar()
         self.apellido_paterno_var = tk.StringVar()
         self.rut_var = tk.StringVar()
         self.direccion_var = tk.StringVar()
-        self.calendario_var = dt.datetime.now()
         self.correo_var = tk.StringVar()
         self.telefono_var = tk.StringVar()
         self.empresa_var = tk.StringVar()
         self.funciones_var = tk.StringVar()
         self.descripcion_textbox = tk.StringVar()
 
-        # TODO Creando el estilo visual del widgets con TTkBootstrap
         # Variable validar rut
         self.rut_validado = False
 
         # Crear el marco para el formulario de información personal
-        personal_frame = tb.LabelFrame(root, text="Información Personal")
+        personal_frame = tb.LabelFrame(
+            root, text="Información Personal", bootstyle="primary")
         personal_frame.grid(row=0, column=0, padx=20, pady=20, sticky="w")
 
         # Crear campos del formulario de información personal
         tb.Label(personal_frame, text="Nombre:").grid(
-            row=0, column=0, sticky="w")
+            row=0, column=0, padx=10, sticky="w")
+        # Entry con validacion Key
         nombre_entry = tb.Entry(personal_frame, textvariable=self.nombre_var)
         nombre_entry.grid(row=0, column=1, pady=5, padx=5, sticky="w")
+        # Label de error en nombre
+        self.error_label = tb.Label(personal_frame, text="")
+        self.error_label.grid(row=0, column=2, padx=5, sticky="w")
 
         tb.Label(personal_frame, text="Apellido Paterno:").grid(
-            row=1, column=0, sticky="w")
+            row=1, column=0, padx=10, sticky="w")
         apellido_paterno_entry = tb.Entry(
             personal_frame, textvariable=self.apellido_paterno_var)
         apellido_paterno_entry.grid(
             row=1, column=1, pady=5, padx=5, sticky="w")
 
         tb.Label(personal_frame, text="Apellido Materno:").grid(
-            row=2, column=0, sticky="w")
+            row=2, column=0, padx=10, sticky="w")
         apellido_materno_entry = tb.Entry(
             personal_frame, textvariable=self.apellido_materno_var)
         apellido_materno_entry.grid(
             row=2, column=1, pady=5, padx=5, sticky="w")
 
         tb.Label(personal_frame, text="Rut:").grid(
-            row=3, column=0, sticky="w")
+            row=3, column=0, padx=10, sticky="w")
         rut_entry = tb.Entry(personal_frame, textvariable=self.rut_var)
         rut_entry.grid(row=3, column=1, pady=5, padx=5, sticky="w")
 
-        # Dar formato Entry - RUT
-        def formato_rut(*args):
-            # Eliminar guiones y puntos, y verificar si la entrada contiene solo dígitos
-            nuevo_input = rut_entry.get().replace("-", "").replace(".", "")
-            if len(nuevo_input) == 9:
-                # Verificar si el último carácter es un dígito o "K"
-                ultimo_caracter = nuevo_input[-1]
-                if ultimo_caracter.isdigit() or ultimo_caracter.upper() == "K":
-                    formato_rut = f"{nuevo_input[:2]}.{nuevo_input[2:5]}.{nuevo_input[5:8]}-{ultimo_caracter}"
-                    self.rut_var.set(formato_rut)
-                    self.rut_validado = True
-                else:
-                    messagebox.showerror(
-                        "RUT INVALIDO", "Debe terminar en dígito o 'K'")
-                    self.rut_validado = False
-                    self.rut_var.set("")
-            else:
-                messagebox.showerror(
-                    "RUT INVALIDO", "RUT debe tener 9 caracteres (sin contar guiones)")
-                self.rut_validado = False
-                self.rut_var.set("")
-
-        # Vincular la función "formato_rut"al evento <FocusOut>
-        rut_entry.bind("<FocusOut>", formato_rut)
-
         tb.Label(personal_frame, text="Fecha de Nacimiento").grid(
-            row=4, column=0, sticky="w")
-
+            row=4, column=0, padx=10, sticky="w")
         self.calendario_entry = tb.DateEntry(
-            personal_frame, bootstyle="danger", firstweekday=0, startdate=dt.datetime(1990, 12, 31))
+            personal_frame, bootstyle="secondary", firstweekday=0, startdate=dt.datetime(1990, 12, 31))
         self.calendario_entry.grid(row=4, column=1, pady=5, padx=5, sticky="w")
 
         tb.Label(personal_frame, text="Dirección:").grid(
-            row=5, column=0, sticky="w")
+            row=5, column=0, padx=10, sticky="w")
         direccion_entry = tb.Entry(
             personal_frame, textvariable=self.direccion_var)
         direccion_entry.grid(row=5, column=1, pady=5, padx=5, sticky="w")
 
         tb.Label(personal_frame, text="Correo electrónico:").grid(
-            row=6, column=0, sticky="w")
+            row=6, column=0, padx=10, sticky="w")
         correo_entry = tb.Entry(personal_frame, textvariable=self.correo_var)
         correo_entry.grid(row=6, column=1, pady=5, padx=5, sticky="w")
 
         tb.Label(personal_frame, text="Número de teléfono:").grid(
-            row=7, column=0, sticky="w")
+            row=7, column=0, padx=10, sticky="w")
         telefono_entry = tb.Entry(
             personal_frame, textvariable=self.telefono_var)
         telefono_entry.grid(row=7, column=1, pady=5, padx=5, sticky="w")
 
-        # Formatear telefono al salir del foc
+        # Formato telefono
         def formato_telefono(*args):
-            nuevo_input = telefono_entry.get()
+            nuevo_input = self.telefono_var.get().replace(".", "")
             # Verifica si la entrada contiene solo dígitos
             if nuevo_input.isdigit():
                 # Formatea el número de teléfono
@@ -120,18 +95,18 @@ class FormularioApp:
             else:
                 # La entrada no es válida; mantén la entrada original
                 self.telefono_var.set(nuevo_input)
+
         # Vincular la función  al evento <FocusOut>
-        telefono_entry.bind("<FocusOut>", formato_telefono)
+        telefono_entry.bind("<FocusOut>", formato_telefono())
 
         tb.Label(personal_frame, text="Empresa:").grid(
-            row=8, column=0, sticky="w")
+            row=8, column=0, padx=10, sticky="w")
         empresa_entry = tb.Entry(
             personal_frame, textvariable=self.empresa_var)
         empresa_entry.grid(row=8, column=1, pady=5, padx=5, sticky="w")
 
         tb.Label(personal_frame, text="Cargo:").grid(
-            row=9, column=0, sticky="w")
-
+            row=9, column=0, padx=10, sticky="w")
         opciones_cargo = ["Ejecutivo de Ventas", "Cajero", "Analista",
                           "Jefe de Área", "Jefe de Proyectos", "Gerente", "DBA"]
         self.cargo_combobox = tb.Combobox(
@@ -139,12 +114,30 @@ class FormularioApp:
         self.cargo_combobox.grid(row=9, column=1, pady=5, padx=5, sticky="w")
 
         tb.Label(personal_frame, text="Descripción del Cargo:").grid(
-            row=10, column=0, sticky="w")
-
-        # Crear un cuadro de texto (textbox) para la descripción
+            row=10, column=0, padx=10, sticky="w")
         self.descripcion_textbox = tk.Text(personal_frame, height=5, width=40)
         self.descripcion_textbox.grid(
             row=10, column=1, pady=5, padx=5, sticky="w")
+
+        # Dar formato Entry - RUT
+
+        def formato_rut():
+            # Eliminar guiones y puntos, y verificar si la entrada contiene solo dígitos
+            nuevo_input = rut_entry.get().replace("-", "").replace(".", "")
+          # Verificar si el último carácter es un dígito o "K"
+            ultimo_caracter = nuevo_input[-1]
+            if ultimo_caracter.isdigit() or ultimo_caracter.upper() == "K":
+                formato_rut = f"{nuevo_input[:2]}.{nuevo_input[2:5]}.{nuevo_input[5:8]}-{ultimo_caracter}"
+                self.rut_var.set(formato_rut)
+                self.rut_validado = True
+            else:
+                messagebox.showerror(
+                    "RUT INVALIDO", "Debe terminar en dígito o 'K'")
+                self.rut_validado = False
+                self.rut_var.set("")
+
+        # Vincular la función "formato_rut"al evento <FocusOut>
+        rut_entry.bind("<FocusOut>", formato_rut)
 
         # Crear e l botón para guardar el formulario
         guardar_button = tb.Button(
@@ -176,7 +169,7 @@ class FormularioApp:
         self.tabla.heading("Acciones", text="Acciones")
 
         # Configurar la acción "Eliminar" en la tabla
-        self.tabla.bind("<Button-1>", self.on_select)
+        self.tabla.bind("<Button-1>", self.on_click)
 
         # Agregar scrollbar vertical de la grilla
         scrollbar = tb.Scrollbar(
@@ -190,6 +183,7 @@ class FormularioApp:
         self.tabla.configure(xscrollcommand=scrollbar_x.set)
         scrollbar_x.grid(row=3, column=0, sticky="ew")
 
+    # Función que se ejecuta al hacer clic sobre una fila de la tabla
     def eliminar_registro(self):
         # Obtener el ítem seleccionado
         selected_item = self.tabla.selection()
@@ -200,13 +194,14 @@ class FormularioApp:
 
         # Eliminar el ítem seleccionado de la grilla
         self.tabla.delete(selected_item)
+# -----------------------------------------------------------------------------
 
-    def on_select(self, event):
-        selection = self.tabla.selection()
-        if selection:
-            item = selection[0]
-            column = self.tabla.identify_column(event.x)
-            if column == "#8":
+    def on_click(self, event):
+        seleccion = self.tabla.selection()
+        if seleccion:
+            item = seleccion[0]
+            columna = self.tabla.identify_column(event.x)
+            if columna == "#8":
                 self.eliminar_registro()
 
     def guardar_formulario(self):
@@ -276,38 +271,23 @@ class FormularioApp:
                      (fecha_nacimiento.month, fecha_nacimiento.day))
                 return edad
             else:
-                return 0
+                return "0"
 
             # Validacion del nombre y apellidos
 
-        # Validacion de nombre y apellidos
-        def validar_nombre(nombre):
-            if len(nombre) > 50:
-                messagebox.showerror(
-                    "Error", "El nombre y apellidos no pueden exceder los 50 caracteres cada uno.")
-                return False
-            elif not nombre.strip():
-                messagebox.showerror(
-                    "Error", "Nombre, Apellidos son requerido.")
-                return False
-            elif not nombre.replace(" ", "").isalpha():
-                messagebox.showerror(
-                    "Error", "Nombre y Apellidos solo pueden contener letras.")
-                return False
-            else:
-                return True
-
         # Insertar datos en la grilla
-        if validar_nombre(nombre) and validar_nombre(apellido_materno) and validar_nombre(apellido_paterno) and calcular_edad(fecha_nacimiento) > 0 and self.rut_validado and validar_direccion(direccion) and validar_correo(correo) and validar_empresa(empresa) and validar_cargo(cargo):
+        if nombre.strip() and apellido_paterno.strip() and apellido_materno.strip() and calcular_edad(fecha_nacimiento) > 0 and self.rut_validado and validar_direccion(direccion) and validar_correo(correo) and validar_empresa(empresa) and validar_cargo(cargo):
+
             self.tabla.insert("", "end", values=(nombre_completo, rut, calcular_edad(
                 fecha_nacimiento), correo, telefono, empresa, cargo, "Eliminar"))
             messagebox.showinfo(
                 message="Ingresado Correctamente", title="Aviso")
+
         else:
             messagebox.showerror("Alerta", "Ingreso Incorrecto")
 
 
 if __name__ == "__main__":
-    root = tk.Tk()
+    root = tb.Window("FormularioApp", resizable=(False, False))
     app = FormularioApp(root)
     root.mainloop()
