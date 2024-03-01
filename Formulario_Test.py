@@ -64,8 +64,8 @@ class FormularioApp(tb.Frame):
 
         cantidad = 5
         for i in range(cantidad):
-            self.usuario("Pablo", "18.670.217-4", "pablo@gmail.com",
-                         "932894650", "Nodos", "Cajero", "30")
+            self.usuario("Pablo", "18.660.243-2", "pablo@gmail.com",
+                         "+56932894650", "Nodos", "Cajero", "30")
 
     # ----------------------------------------------
         # Creacion de inputs
